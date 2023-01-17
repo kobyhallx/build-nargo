@@ -73,9 +73,8 @@ jobs:
           nix_path: nixpkgs=channel:nixpkgs-22.11-darwin
 
       - name: Build environment and Compile
+        working-directory: noir/crates/nargo
         run: |
-          # brew install bash
-          # bash --version
           nix-shell shell.nix --pure --run "cargo build --release"
 
       # - name: Rust toolchain Install
