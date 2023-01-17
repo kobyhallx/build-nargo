@@ -1,0 +1,31 @@
+diff --git a/crates/nargo/Cargo.toml b/crates/nargo/Cargo.toml
+index 2ce90f1a..84c1a1e8 100644
+--- a/crates/nargo/Cargo.toml
++++ b/crates/nargo/Cargo.toml
+@@ -29,7 +29,8 @@ hex = "0.4.2"
+ tempdir = "0.3.7"
+ 
+ # Backends
+-aztec_backend = { optional = true, package = "barretenberg_static_lib", git = "https://github.com/noir-lang/aztec_backend", rev = "8c8ec2dd9c376bef598d17f023fac172e5e47860" }
++aztec_backend = { optional = true, package = "barretenberg_static_lib", path = "../../../aztec_backend/barretenberg_static_lib"}
++#, rev = "8c8ec2dd9c376bef598d17f023fac172e5e47860" 
+ marlin_arkworks_backend = { optional = true, git = "https://github.com/noir-lang/marlin_arkworks_backend", rev = "601e24dcb5dcbe72e3de7a33879aaf84e171d541" }
+ 
+ [features]
+diff --git a/crates/nargo/build.rs b/crates/nargo/build.rs
+index 6441ffda..596fc97b 100644
+--- a/crates/nargo/build.rs
++++ b/crates/nargo/build.rs
+@@ -63,8 +63,8 @@ pub fn copy<U: AsRef<Path>, V: AsRef<Path>>(from: U, to: V) -> Result<(), std::i
+ }
+ 
+ fn main() {
+-    let stdlib_src_dir = Path::new("../../noir_stdlib/");
+-    rerun_if_stdlib_changes(stdlib_src_dir);
+-    let target = dirs::config_dir().unwrap().join("noir-lang").join("std");
+-    copy(stdlib_src_dir, target).unwrap();
++    // let stdlib_src_dir = Path::new("../../noir_stdlib/");
++    // rerun_if_stdlib_changes(stdlib_src_dir);
++    // let target = dirs::config_dir().unwrap().join("noir-lang").join("std");
++    // copy(stdlib_src_dir, target).unwrap();
+ }

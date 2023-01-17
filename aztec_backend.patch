@@ -1,0 +1,14 @@
+diff --git a/barretenberg_static_lib/Cargo.toml b/barretenberg_static_lib/Cargo.toml
+index ec607d3..87f2566 100644
+--- a/barretenberg_static_lib/Cargo.toml
++++ b/barretenberg_static_lib/Cargo.toml
+@@ -8,7 +8,8 @@ edition = "2021"
+ [dependencies]
+ 
+ common = { path = "../common" }
+-barretenberg_wrapper = { git = "https://github.com/noir-lang/aztec-connect", rev = "2c961d511c245d7debef04d99b42c3de4268cad8" }
++barretenberg_wrapper = { path = "../../aztec-connect/barretenberg_wrapper" }
++# , rev = "2c961d511c245d7debef04d99b42c3de4268cad8"
+ 
+ sha2 = "0.9.3"
+ blake2 = "0.9.1"
