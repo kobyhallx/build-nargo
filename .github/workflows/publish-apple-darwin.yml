@@ -29,7 +29,7 @@ jobs:
         working-directory: noir
         run: git apply ../noir.patch
 
-      - name: Apply Patch
+      - name: Checkout noir-lang/aztec_backend 
         uses: actions/checkout@v3
         with:
           repository: noir-lang/aztec_backend
@@ -74,6 +74,7 @@ jobs:
 
       - name: Build environment and Compile
         run: |
+          bash --version
           nix-shell shell.nix --pure --run "cargo build --release"
 
       # - name: Rust toolchain Install
