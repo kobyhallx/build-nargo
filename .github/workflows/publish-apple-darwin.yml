@@ -75,7 +75,7 @@ jobs:
       - name: Build environment and Compile
         working-directory: noir/crates/nargo
         run: |
-          nix-shell $GITHUB_WORKSPACE/shell.nix --pure --run "cargo build --release --target ${{ matrix.target }}"
+          nix-shell $GITHUB_WORKSPACE/shell.nix --pure --run "cargo build --release"
 
       # - name: Rust toolchain Install
       #   uses: actions-rs/toolchain@v1
@@ -100,7 +100,7 @@ jobs:
         working-directory: noir
         run: |
           mkdir dist
-          cp ./noir/target/${{ matrix.target }}/release/nargo ./dist/nargo
+          cp ./noir/target/release/nargo ./dist/nargo
           mkdir -p ./dist/noir-lang/std
           cp -r noir_stdlib/* ./dist/noir-lang/std/
           7z a -ttar -so -an ./dist/* | 7z a -si ./nargo-${{ matrix.target }}.tar.gz
