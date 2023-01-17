@@ -69,12 +69,13 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - uses: cachix/install-nix-action@v18
-        # with:
-          # nix_path: nixpkgs=channel:nixpkgs-22.05
+        with:
+          nix_path: nixpkgs=channel:nixpkgs-22.11-darwin
 
       - name: Build environment and Compile
         run: |
-          bash --version
+          # brew install bash
+          # bash --version
           nix-shell shell.nix --pure --run "cargo build --release"
 
       # - name: Rust toolchain Install
