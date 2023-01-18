@@ -1,51 +1,53 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/a83ed85c14fcf242653df6f4b0974b7e1c73c6c6.tar.gz") {} 
-, target ? "x86_64-apple-darwin"
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8c54d842d9544361aac5f5b212ba04e4089e8efe.tar.gz") {} 
+, target ? pkgs.hostPlatform.config
+, toolchain ? pkgs.rust.packages.stable.rustc.version
 }:
 
 let
-  toolchain = "1.65.0";
-  # target = "x86_64-apple-darwin";
-  lib = pkgs.lib;
-  # stdenv = pkgs.stdenv;
-  stdenv = pkgs.llvmPackages_11.stdenv;
+  llvmPkgs = pkgs.llvmPackages_11;
+  
   libSystem = pkgs.darwin.apple_sdk_11_0.Libsystem;
   inherit (pkgs.darwin.apple_sdk_11_0.frameworks) AppKit CoreFoundation IOKit Security System;
   # System = null;
   MacOSX-SDK = pkgs.darwin.apple_sdk_11_0.MacOSX-SDK or null;
 in
-pkgs.mkShell.override {stdenv = stdenv;} {
+pkgs.mkShell.override {stdenv = llvmPkgs.stdenv;} {
 
   nativeBuildInputs = with pkgs; [ 
     curl
     which
     cacert
     git
-    pkg-config
-    cmake
-    # llvmPackages.llvm
-    # llvmPackages.clang
+    jq
+    toml2json
+    # pkg-config
+    # cmake
     gtest
     rocksdb
     rustup
-    cargo
-    rustc
+    
   ] ++ lib.optionals stdenv.isLinux [ 
-    glibc
+    # gcc
   ];
   
   buildInputs = with pkgs; [ 
-    # llvmPackages.llvm
+    pkg-config
+    cmake
+    # glibc
+    # gcc
+  # llvmPackages.llvm
     llvmPackages.libclang
     llvmPackages.openmp
+    # llvmPackages.libcxx
     openssl
-    libiconv
-    zlib
   ] ++ lib.optionals stdenv.isLinux [
     # udev
   ] ++ lib.optionals (stdenv.isDarwin && stdenv.isAarch64) [
 
   ]
   ++ lib.optionals stdenv.isDarwin [
+    libiconv
+    zlib
     # libSystem
     # AppKit
     # CoreFoundation
@@ -79,21 +81,22 @@ pkgs.mkShell.override {stdenv = stdenv;} {
   #   sha256 = "sha256-MMSb6KJK5GPGOnxKLbeH8cIz7L9QjVLFp0k40JoFQJY=";
   # };
 
+  LIBCLANG_PATH = "${pkgs.llvmPackages_11.libclang.lib}/lib";
   # LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
   # LLVM_CONFIG_PATH = "${pkgs.llvmPackages.llvm}/bin/llvm-config";
   OPENSSL_NO_VENDOR = 1; # we want to link to OpenSSL provided by Nix
 
+  TARGET_PLATFORM_CONFIG = target;
   # NIX_LDFLAGS = if (!stdenv.isDarwin || MacOSX-SDK == null) then null else [
   #   # XXX: as System framework is broken, use MacOSX-SDK directly instead
   #   "-F${MacOSX-SDK}/System/Library/Frameworks"
   # ];
 
-  BREW_PREFIX = "${pkgs.llvmPackages.openmp}";
-  NIX_CFLAGS_COMPILE = ["-fno-aligned-allocation"];
-  CMAKE_CXX_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang++";
-  CMAKE_C_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang";
+  # BREW_PREFIX = "${pkgs.llvmPackages.openmp}";
+  # NIX_CFLAGS_COMPILE = ["-fno-aligned-allocation"];
+  # CMAKE_CXX_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang++";
+  # CMAKE_C_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang";
 
-  shellHook = ''
     # export BINDGEN_EXTRA_CLANG_ARGS="$(< ${stdenv.cc}/nix-support/libc-crt1-cflags) \
     #   $(< ${stdenv.cc}/nix-support/libc-cflags) \
     #   $(< ${stdenv.cc}/nix-support/cc-cflags) \
@@ -101,6 +104,7 @@ pkgs.mkShell.override {stdenv = stdenv;} {
     #   ${lib.optionalString stdenv.cc.isClang "-idirafter ${stdenv.cc.cc}/lib/clang/${lib.getVersion stdenv.cc.cc}/include"} \
     #   ${lib.optionalString stdenv.cc.isGNU "-isystem ${stdenv.cc.cc}/include/c++/${lib.getVersion stdenv.cc.cc} -isystem ${stdenv.cc.cc}/include/c++/${lib.getVersion stdenv.cc.cc}/${stdenv.hostPlatform.config} -idirafter ${stdenv.cc.cc}/lib/gcc/${stdenv.hostPlatform.config}/${lib.getVersion stdenv.cc.cc}/include"} \
     # "
+  shellHook = ''
     echo 🧪 SDK=${MacOSX-SDK.name}
     echo 🧪 src=$src
     echo 🧪 NIX_CFLAGS_COMPILE=$NIX_CFLAGS_COMPILE
@@ -116,9 +120,6 @@ pkgs.mkShell.override {stdenv = stdenv;} {
     echo 🧪 pkg-config --list-all ↩️
     pkg-config --list-all
     echo ⌛
-    # mkdir -p /usr/local/opt/llvm/bin/
-    # ln -s $(which $CC) /usr/local/opt/llvm/bin/clang
-    # ln -s $(which $CXX) /usr/local/opt/llvm/bin/clang++
     echo 🧪 $CC -v ↩️
     $CC -v
     echo ⌛
@@ -128,14 +129,15 @@ pkgs.mkShell.override {stdenv = stdenv;} {
     rustup toolchain install ${toolchain} --target ${target}
     rustup default ${toolchain}-${target}
     echo 🧪 $(which cargo)
-    echo 🧪 cargo --version = $(cargo --version)
-    BUILD_TOP=nargo-build
+    echo 🧪 cargo --version = $(cargo --version)    
+    echo 🧪 TARGET_PLATFORM_CONFIG=$TARGET_PLATFORM_CONFIG
+    echo 🧪 native build with: cargo build --release --target $TARGET_PLATFORM_CONFIG 
+  '';
+    # BUILD_TOP=nargo-build
     # mkdir $BUILD_TOP
     # echo 🧪 Copy source from $src to $BUILD_TOP
     # cp -R $src/* $BUILD_TOP/
     # echo $BUILD_TOP
     # cd $BUILD_TOP
-    
-  '';
 
 }

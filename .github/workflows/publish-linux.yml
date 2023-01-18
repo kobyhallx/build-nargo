@@ -76,9 +76,9 @@ jobs:
 
 
       - name: Build environment and Compile
-        working-directory: noir/crates/nargo
+        # working-directory: noir/crates/nargo
         run: |
-          nix-shell $GITHUB_WORKSPACE/shell.nix --pure --argstr target ${{ matrix.target }} --run "cargo build --release --target ${{ matrix.target }}"
+          nix-shell $GITHUB_WORKSPACE/shell.nix --pure --argstr target ${{ matrix.target }} --run "./build.sh"
 
       - name: Package artifacts
         working-directory: noir
