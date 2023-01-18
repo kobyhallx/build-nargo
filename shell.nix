@@ -1,12 +1,10 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/a83ed85c14fcf242653df6f4b0974b7e1c73c6c6.tar.gz") {
-    crossSystem = {
-      config = "x86_64-apple-darwin";
-    };
-} }:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/a83ed85c14fcf242653df6f4b0974b7e1c73c6c6.tar.gz") {} 
+, target ? "x86_64-apple-darwin"
+}:
 
 let
   toolchain = "1.65.0";
-  target = "x86_64-apple-darwin";
+  # target = "x86_64-apple-darwin";
   lib = pkgs.lib;
   # stdenv = pkgs.stdenv;
   stdenv = pkgs.llvmPackages_11.stdenv;
