@@ -1,4 +1,8 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/a83ed85c14fcf242653df6f4b0974b7e1c73c6c6.tar.gz") {} }:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/a83ed85c14fcf242653df6f4b0974b7e1c73c6c6.tar.gz") {
+    crossSystem = {
+      config = "x86_64-apple-darwin";
+    };
+} }:
 
 let
   toolchain = "1.65.0";
@@ -22,6 +26,9 @@ pkgs.mkShell.override {stdenv = stdenv;} {
     cmake
     # llvmPackages.llvm
     # llvmPackages.clang
+    gtest
+    rocksdb
+    glibc
     rustup
     cargo
     rustc
@@ -36,7 +43,10 @@ pkgs.mkShell.override {stdenv = stdenv;} {
     zlib
   ] ++ lib.optionals stdenv.isLinux [
     # udev
-  ] ++ lib.optionals stdenv.isDarwin [
+  ] ++ lib.optionals (stdenv.isDarwin && stdenv.isAarch64) [
+
+  ]
+  ++ lib.optionals stdenv.isDarwin [
     # libSystem
     # AppKit
     # CoreFoundation

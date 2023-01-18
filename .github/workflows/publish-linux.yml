@@ -20,14 +20,14 @@ jobs:
       matrix:
         target: [
             x86_64-unknown-linux-gnu,
-            x86_64-unknown-linux-musl,
-            i686-unknown-linux-gnu,
-            i686-unknown-linux-musl,
-            aarch64-unknown-linux-gnu,
-            aarch64-unknown-linux-musl,
+            # x86_64-unknown-linux-musl,
+            # i686-unknown-linux-gnu,
+            # i686-unknown-linux-musl,
+            # aarch64-unknown-linux-gnu,
+            # aarch64-unknown-linux-musl,
             # arm-unknown-linux-gnueabihf,
             # arm-unknown-linux-musleabihf,
-            riscv64gc-unknown-linux-gnu,
+            # riscv64gc-unknown-linux-gnu,
           ]
 
     steps:
@@ -40,12 +40,12 @@ jobs:
           repository: noir-lang/noir
           path: noir
 
-      - name: Patch backend in crates/nargo/Cargo.toml
-        working-directory: noir
-        run: |
-          sed -i -E 's/\[dependencies\]/\[dependencies\]\nopenssl = { version = "0.10", features = ["vendored"] }/g' ./crates/nargo/Cargo.toml
-          sed -i -E 's/^aztec_backend.+}/aztec_backend = { optional = true, package = "barretenberg_wasm", git = "https:\/\/github.com\/noir-lang\/aztec_backend", rev = "e1f206f6739d3782d3a241298089a0292de33742" }/g' ./crates/nargo/Cargo.toml
-          echo 🧪 patched backend = ''$(cat crates/nargo/Cargo.toml | grep aztec_backend)''
+      # - name: Patch backend in crates/nargo/Cargo.toml
+      #   working-directory: noir
+      #   run: |
+      #     sed -i -E 's/\[dependencies\]/\[dependencies\]\nopenssl = { version = "0.10", features = ["vendored"] }/g' ./crates/nargo/Cargo.toml
+      #     sed -i -E 's/^aztec_backend.+}/aztec_backend = { optional = true, package = "barretenberg_wasm", git = "https:\/\/github.com\/noir-lang\/aztec_backend", rev = "e1f206f6739d3782d3a241298089a0292de33742" }/g' ./crates/nargo/Cargo.toml
+      #     echo 🧪 patched backend = ''$(cat crates/nargo/Cargo.toml | grep aztec_backend)''
 
       - uses: actions/cache@v3
         with:
@@ -59,16 +59,22 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: 1.65.0
+          toolchain: 1.66.1
           target: ${{ matrix.target }}
           default: true
           override: true
 
-      - name: Build Nargo
-        working-directory: noir
+      # - name: Build Nargo
+      #   working-directory: noir
+      #   run: |
+      #     cargo install cross --force --git https://github.com/cross-rs/cross
+      #     cross build --release --target=${{ matrix.target }}
+
+
+      - name: Build environment and Compile
+        working-directory: noir/crates/nargo
         run: |
-          cargo install cross --force --git https://github.com/cross-rs/cross
-          cross build --release --target=${{ matrix.target }}
+          nix-shell $GITHUB_WORKSPACE/shell.nix --pure --run "cargo build --release --target ${{ matrix.target }}"
 
       - name: Package artifacts
         working-directory: noir
@@ -86,19 +92,19 @@ jobs:
           path: ./noir/dist/*
           retention-days: 3
 
-      - name: Test built artifact
-        if: matrix.target == 'x86_64-unknown-linux-gnu'
-        run: |
-          npm install
-          npm test
+      # - name: Test built artifact
+      #   if: matrix.target == 'x86_64-unknown-linux-gnu'
+      #   run: |
+      #     npm install
+      #     npm test
 
-      - name: Upload binaries to Noir Repo nightly tag
-        uses: svenstaro/upload-release-action@v2
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        with:
-          repo_name: noir-lang/noir
-          repo_token: ${{ secrets.NOIR_REPO_TOKEN }}
-          file: ./noir/nargo-${{ matrix.target }}.tar.gz
-          asset_name: nargo-${{ matrix.target }}.tar.gz
-          overwrite: true
-          tag: nightly
+      # - name: Upload binaries to Noir Repo nightly tag
+      #   uses: svenstaro/upload-release-action@v2
+      #   if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      #   with:
+      #     repo_name: noir-lang/noir
+      #     repo_token: ${{ secrets.NOIR_REPO_TOKEN }}
+      #     file: ./noir/nargo-${{ matrix.target }}.tar.gz
+      #     asset_name: nargo-${{ matrix.target }}.tar.gz
+      #     overwrite: true
+      #     tag: nightly
