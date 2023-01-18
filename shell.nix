@@ -26,10 +26,11 @@ pkgs.mkShell.override {stdenv = stdenv;} {
     # llvmPackages.clang
     gtest
     rocksdb
-    glibc
     rustup
     cargo
     rustc
+  ] ++ lib.optionals stdenv.isLinux [ 
+    glibc
   ];
   
   buildInputs = with pkgs; [ 
