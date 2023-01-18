@@ -15,7 +15,7 @@ if [[ -d "$NOIR_DIR" ]]; then
     echo "$NOIR_DIR exists on your filesystem, using it for build..."
 else
     echo "$NOIR_DIR does not exists on your filesystem, clonning from $NOIR_CLONE_URL"
-    git clone $GIT_VENDOR_URL/$NOIR_REPO_PATH $NOIR_DIR
+    git clone $GIT_VENDOR_URL/$NOIR_REPO_PATH $main_dir/$NOIR_DIR
     cd $main_dir/$NOIR_DIR
     # git checkout 
 fi
@@ -26,7 +26,7 @@ if [[ -d "$AZTEC_BACKEND_DIR" ]]; then
     echo "$AZTEC_BACKEND_DIR exists on your filesystem, using it for build..."
 else
     echo "$AZTEC_BACKEND_DIR does not exists on your filesystem, clonning from $NOIR_CLONE_URL"
-    git clone $GIT_VENDOR_URL/$AZTEC_BACKEND_REPO_PATH $AZTEC_BACKEND_DIR
+    git clone $GIT_VENDOR_URL/$AZTEC_BACKEND_REPO_PATH $main_dir/$AZTEC_BACKEND_DIR
     echo "Checkout $AZTEC_BACKEND_REV rev."
     cd $main_dir/$AZTEC_BACKEND_DIR
     git checkout $AZTEC_BACKEND_REV
@@ -38,7 +38,7 @@ if [[ -d "$AZTEC_CONNECT_DIR" ]]; then
     echo "$AZTEC_CONNECT_DIR exists on your filesystem, using it for build..."
 else
     echo "$AZTEC_CONNECT_DIR does not exists on your filesystem, clonning from $NOIR_CLONE_URL"
-    git clone $GIT_VENDOR_URL/$AZTEC_CONNECT_REPO_PATH $AZTEC_CONNECT_DIR
+    git clone $GIT_VENDOR_URL/$AZTEC_CONNECT_REPO_PATH $main_dir/$AZTEC_CONNECT_DIR
     echo "Checkout $AZTEC_CONNECT_REV rev."
     cd $main_dir/$AZTEC_CONNECT_DIR
     git checkout $AZTEC_CONNECT_REV
