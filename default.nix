@@ -92,7 +92,7 @@ pkgs.mkShell.override {stdenv = llvmPkgs.stdenv;} {
   #   "-F${MacOSX-SDK}/System/Library/Frameworks"
   # ];
 
-  # BREW_PREFIX = "${pkgs.llvmPackages.openmp}";
+  BREW_PREFIX = "${pkgs.llvmPackages.openmp}";
   # NIX_CFLAGS_COMPILE = ["-fno-aligned-allocation"];
   # CMAKE_CXX_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang++";
   # CMAKE_C_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang";
