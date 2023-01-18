@@ -25,9 +25,9 @@ jobs:
           repository: noir-lang/noir
           path: noir
 
-      - name: Apply Patch
-        working-directory: noir
-        run: git apply ../noir.patch
+      # - name: Apply Patch
+      #   working-directory: noir
+      #   run: git apply ../noir.patch
 
       - name: Checkout noir-lang/aztec_backend 
         uses: actions/checkout@v3
@@ -36,9 +36,9 @@ jobs:
           path: aztec_backend
           ref: '8c8ec2dd9c376bef598d17f023fac172e5e47860'
 
-      - name: Apply Patch
-        working-directory: aztec_backend
-        run: git apply ../aztec_backend.patch
+      # - name: Apply Patch
+      #   working-directory: aztec_backend
+      #   run: git apply ../aztec_backend.patch
 
       - name: Checkout aztec-connect repo
         uses: actions/checkout@v3
@@ -47,9 +47,9 @@ jobs:
           path: aztec-connect
           ref: '2c961d511c245d7debef04d99b42c3de4268cad8'
 
-      - name: Apply Patch
-        working-directory: aztec-connect
-        run: git apply ../aztec-connect.patch
+      # - name: Apply Patch
+      #   working-directory: aztec-connect
+      #   run: git apply ../aztec-connect.patch
 
       - name: Setup for Apple Silicon
         if: matrix.target == 'aarch64-apple-darwin'
@@ -73,9 +73,9 @@ jobs:
           nix_path: nixpkgs=channel:nixpkgs-22.11-darwin
 
       - name: Build environment and Compile
-        working-directory: noir/crates/nargo
+        # working-directory: noir/crates/nargo
         run: |
-          nix-shell $GITHUB_WORKSPACE/shell.nix --pure --argstr target ${{ matrix.target }} --run "cargo build --release"
+          nix-shell $GITHUB_WORKSPACE/default.nix --pure --argstr target ${{ matrix.target }} --run "./build.sh"
 
       # - name: Rust toolchain Install
       #   uses: actions-rs/toolchain@v1
