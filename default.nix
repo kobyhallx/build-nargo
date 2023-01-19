@@ -91,9 +91,9 @@ pkgs.mkShell.override {stdenv = llvmPkgs.stdenv;} {
   #   # XXX: as System framework is broken, use MacOSX-SDK directly instead
   #   "-F${MacOSX-SDK}/System/Library/Frameworks"
   # ];
+  NIX_CFLAGS_COMPILE = if (pkgs.stdenv.isDarwin) then [" -fno-aligned-allocation"] else null;
 
-  BREW_PREFIX = "${pkgs.llvmPackages.openmp}";
-  # NIX_CFLAGS_COMPILE = ["-fno-aligned-allocation"];
+  # BREW_PREFIX = "${pkgs.llvmPackages.openmp}";
   # CMAKE_CXX_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang++";
   # CMAKE_C_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang";
 
