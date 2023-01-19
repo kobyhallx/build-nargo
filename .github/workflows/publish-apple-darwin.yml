@@ -19,33 +19,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Checkout Noir repo
-        uses: actions/checkout@v3
-        with:
-          repository: noir-lang/noir
-          path: noir
+      # - name: Checkout Noir repo
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: noir-lang/noir
+      #     path: noir
 
       # - name: Apply Patch
       #   working-directory: noir
       #   run: git apply ../noir.patch
 
-      - name: Checkout noir-lang/aztec_backend 
-        uses: actions/checkout@v3
-        with:
-          repository: noir-lang/aztec_backend
-          path: aztec_backend
-          ref: '8c8ec2dd9c376bef598d17f023fac172e5e47860'
+      # - name: Checkout noir-lang/aztec_backend 
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: noir-lang/aztec_backend
+      #     path: aztec_backend
+      #     ref: '8c8ec2dd9c376bef598d17f023fac172e5e47860'
 
       # - name: Apply Patch
       #   working-directory: aztec_backend
       #   run: git apply ../aztec_backend.patch
 
-      - name: Checkout aztec-connect repo
-        uses: actions/checkout@v3
-        with:
-          repository: noir-lang/aztec-connect
-          path: aztec-connect
-          ref: '2c961d511c245d7debef04d99b42c3de4268cad8'
+      # - name: Checkout aztec-connect repo
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: noir-lang/aztec-connect
+      #     path: aztec-connect
+      #     ref: '2c961d511c245d7debef04d99b42c3de4268cad8'
 
       # - name: Apply Patch
       #   working-directory: aztec-connect
