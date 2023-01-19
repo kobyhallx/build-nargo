@@ -93,7 +93,7 @@ pkgs.mkShell.override {stdenv = llvmPkgs.stdenv;} {
   # ];
   NIX_CFLAGS_COMPILE = if (pkgs.stdenv.isDarwin) then [" -fno-aligned-allocation"] else null;
 
-  # BREW_PREFIX = "${pkgs.llvmPackages.openmp}";
+  BREW_PREFIX = if (pkgs.stdenv.isDarwin) then [ "${pkgs.llvmPackages.openmp}" ] else null;
   # CMAKE_CXX_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang++";
   # CMAKE_C_COMPILER = "${pkgs.llvmPackages.llvm}/bin/clang";
 
@@ -111,6 +111,7 @@ pkgs.mkShell.override {stdenv = llvmPkgs.stdenv;} {
     echo 🧪 NIX_LDFLAGS=$NIX_LDFLAGS
     echo 🧪 LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     echo 🧪 CPATH=$CPATH
+    echo 🧪 BREW_PREFIX=$BREW_PREFIX
     echo 🧪 $CC $AR $CXX $LD
     echo 🧪 $(which $CC) 
     echo 🧪 $(which $AR) 
