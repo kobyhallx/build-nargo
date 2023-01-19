@@ -74,7 +74,7 @@ index 35440991..f3ab1375 100644
 +# set(CMAKE_C_COMPILER "$ENV{BREW_PREFIX}/opt/llvm/bin/clang")
 \ No newline at end of file
 diff --git a/barretenberg_wrapper/build.rs b/barretenberg_wrapper/build.rs
-index dae01733..6f335e7f 100644
+index dae01733..205329ac 100644
 --- a/barretenberg_wrapper/build.rs
 +++ b/barretenberg_wrapper/build.rs
 @@ -61,16 +61,24 @@ fn select_cpp_stdlib() -> &'static str {
@@ -108,6 +108,17 @@ index dae01733..6f335e7f 100644
 +            }
 +        }
 +    
+     }
+ }
+ 
+@@ -235,7 +243,9 @@ fn link_lib_omp(toolchain: &'static str) {
+         INTEL_APPLE | ARM_APPLE => {
+             println!("cargo:rustc-link-lib=omp")
+         }
+-        &_ => println!("cargo:rustc-link-lib=omp5")
++        &_ => {
++            println!("cargo:rustc-link-lib=omp")
++        }
      }
  }
  
