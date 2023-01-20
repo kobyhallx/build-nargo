@@ -1,19 +1,71 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 7a819918..81d589d7 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -358,11 +358,10 @@ dependencies = [
+ [[package]]
+ name = "barretenberg_static_lib"
+ version = "0.1.0"
+-source = "git+https://github.com/noir-lang/aztec_backend?rev=441de9d897683f770f8cd09c34ddca69fe41f3f2#441de9d897683f770f8cd09c34ddca69fe41f3f2"
+ dependencies = [
+  "barretenberg_wrapper",
+  "blake2",
+- "common",
++ "common 0.1.0",
+  "dirs 3.0.2",
+  "downloader",
+  "hex",
+@@ -381,7 +380,7 @@ version = "0.1.0"
+ source = "git+https://github.com/noir-lang/aztec_backend?rev=441de9d897683f770f8cd09c34ddca69fe41f3f2#441de9d897683f770f8cd09c34ddca69fe41f3f2"
+ dependencies = [
+  "blake2",
+- "common",
++ "common 0.1.0 (git+https://github.com/noir-lang/aztec_backend?rev=441de9d897683f770f8cd09c34ddca69fe41f3f2)",
+  "sha2",
+  "sled",
+  "tempfile",
+@@ -391,7 +390,6 @@ dependencies = [
+ [[package]]
+ name = "barretenberg_wrapper"
+ version = "0.1.0"
+-source = "git+https://github.com/noir-lang/aztec-connect?branch=kw/noir-dsl#2ef8be41993ead9993c09b1d99fef6dc68e231a6"
+ dependencies = [
+  "bindgen",
+  "cmake",
+@@ -618,6 +616,19 @@ dependencies = [
+  "unicode-width",
+ ]
+ 
++[[package]]
++name = "common"
++version = "0.1.0"
++dependencies = [
++ "acvm 0.3.1",
++ "blake2",
++ "dirs 3.0.2",
++ "downloader",
++ "indicatif",
++ "regex",
++ "sled",
++]
++
+ [[package]]
+ name = "common"
+ version = "0.1.0"
 diff --git a/crates/nargo/Cargo.toml b/crates/nargo/Cargo.toml
-index 50c47219..5aaa607a 100644
+index 50c47219..c6b91bc8 100644
 --- a/crates/nargo/Cargo.toml
 +++ b/crates/nargo/Cargo.toml
-@@ -29,8 +29,9 @@ hex.workspace = true
+@@ -29,7 +29,8 @@ hex.workspace = true
  tempdir.workspace = true
  
  # Backends
 -aztec_backend = { optional = true, package = "barretenberg_static_lib", git = "https://github.com/noir-lang/aztec_backend", rev = "441de9d897683f770f8cd09c34ddca69fe41f3f2" }
--aztec_wasm_backend = { optional = true, package = "barretenberg_wasm", git = "https://github.com/noir-lang/aztec_backend", rev = "441de9d897683f770f8cd09c34ddca69fe41f3f2" }
 +aztec_backend = { optional = true, package = "barretenberg_static_lib", path = "../../../aztec_backend/barretenberg_static_lib" }
 +# aztec_backend = { optional = true, package = "barretenberg_static_lib", git = "https://github.com/noir-lang/aztec_backend", rev = "441de9d897683f770f8cd09c34ddca69fe41f3f2" }
-+# aztec_wasm_backend = { optional = true, package = "barretenberg_wasm", git = "https://github.com/noir-lang/aztec_backend", rev = "441de9d897683f770f8cd09c34ddca69fe41f3f2" }
+ aztec_wasm_backend = { optional = true, package = "barretenberg_wasm", git = "https://github.com/noir-lang/aztec_backend", rev = "441de9d897683f770f8cd09c34ddca69fe41f3f2" }
  marlin_arkworks_backend = { optional = true, git = "https://github.com/noir-lang/marlin_arkworks_backend", rev = "601e24dcb5dcbe72e3de7a33879aaf84e171d541" }
  
- [features]
 diff --git a/crates/nargo/build.rs b/crates/nargo/build.rs
 index 6441ffda..6ed1b80c 100644
 --- a/crates/nargo/build.rs
