@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 NOIR_DIR="noir"
 AZTEC_BACKEND_DIR="aztec_backend"
 AZTEC_CONNECT_DIR="aztec-connect"
@@ -32,7 +31,7 @@ else
     git checkout $AZTEC_BACKEND_REV
 fi
 
-AZTEC_CONNECT_REV=$(toml2json $main_dir/aztec_backend/barretenberg_static_lib/Cargo.toml | jq -r .dependencies.barretenberg_wrapper.rev)
+AZTEC_CONNECT_REV=$(toml2json $main_dir/aztec_backend/barretenberg_static_lib/Cargo.toml | jq -r .dependencies.barretenberg_wrapper.branch)
 
 if [[ -d "$AZTEC_CONNECT_DIR" ]]; then
     echo "$AZTEC_CONNECT_DIR exists on your filesystem, using it for build..."
