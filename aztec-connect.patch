@@ -1,3 +1,44 @@
+diff --git a/barretenberg/cmake/threading.cmake b/barretenberg/cmake/threading.cmake
+index 3d270d58..17d37759 100644
+--- a/barretenberg/cmake/threading.cmake
++++ b/barretenberg/cmake/threading.cmake
+@@ -1,20 +1,20 @@
+-if(APPLE)
+-    if(CMAKE_C_COMPILER_ID MATCHES "Clang")
+-        set(OpenMP_C_FLAGS "-fopenmp")
+-        set(OpenMP_C_FLAGS_WORK "-fopenmp")
+-        set(OpenMP_C_LIB_NAMES "libomp")
+-        set(OpenMP_C_LIB_NAMES_WORK "libomp")
+-        set(OpenMP_libomp_LIBRARY "$ENV{BREW_PREFIX}/opt/libomp/lib/libomp.dylib")
+-    endif()
++# if(APPLE)
++#     if(CMAKE_C_COMPILER_ID MATCHES "Clang")
++#         set(OpenMP_C_FLAGS "-fopenmp")
++#         set(OpenMP_C_FLAGS_WORK "-fopenmp")
++#         set(OpenMP_C_LIB_NAMES "libomp")
++#         set(OpenMP_C_LIB_NAMES_WORK "libomp")
++#         set(OpenMP_libomp_LIBRARY "$ENV{BREW_PREFIX}/opt/libomp/lib/libomp.dylib")
++#     endif()
+ 
+-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+-        set(OpenMP_CXX_FLAGS "-fopenmp")
+-        set(OpenMP_CXX_FLAGS_WORK "-fopenmp")
+-        set(OpenMP_CXX_LIB_NAMES "libomp")
+-        set(OpenMP_CXX_LIB_NAMES_WORK "libomp")
+-        set(OpenMP_libomp_LIBRARY "$ENV{BREW_PREFIX}/opt/libomp/lib/libomp.dylib")
+-    endif()
+-endif()
++#     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
++#         set(OpenMP_CXX_FLAGS "-fopenmp")
++#         set(OpenMP_CXX_FLAGS_WORK "-fopenmp")
++#         set(OpenMP_CXX_LIB_NAMES "libomp")
++#         set(OpenMP_CXX_LIB_NAMES_WORK "libomp")
++#         set(OpenMP_libomp_LIBRARY "$ENV{BREW_PREFIX}/opt/libomp/lib/libomp.dylib")
++#     endif()
++# endif()
+ 
+ if(MULTITHREADING)
+     find_package(OpenMP REQUIRED)
 diff --git a/barretenberg/cmake/toolchains/x86_64-apple-clang.cmake b/barretenberg/cmake/toolchains/x86_64-apple-clang.cmake
 index 35440991..f3ab1375 100644
 --- a/barretenberg/cmake/toolchains/x86_64-apple-clang.cmake
@@ -11,7 +52,7 @@ index 35440991..f3ab1375 100644
 +# set(CMAKE_C_COMPILER "$ENV{BREW_PREFIX}/opt/llvm/bin/clang")
 \ No newline at end of file
 diff --git a/barretenberg_wrapper/build.rs b/barretenberg_wrapper/build.rs
-index 298a3053..a42e7297 100644
+index 298a3053..470e3ef9 100644
 --- a/barretenberg_wrapper/build.rs
 +++ b/barretenberg_wrapper/build.rs
 @@ -58,13 +58,13 @@ fn select_cpp_stdlib() -> &'static str {
@@ -44,6 +85,21 @@ index 298a3053..a42e7297 100644
  
      let dst = cmake::Config::new("../barretenberg")
          .very_verbose(true)
+@@ -216,10 +216,10 @@ fn link_lib_omp(toolchain: &'static str) {
+             let llvm_dir = find_llvm_linux_path();
+             println!("cargo:rustc-link-search={}/lib", llvm_dir)
+         }
+-        INTEL_APPLE => {
+-            let brew_prefix = find_brew_prefix();
+-            println!("cargo:rustc-link-search={}/opt/libomp/lib", brew_prefix)
+-        }
++        // INTEL_APPLE => {
++            // let brew_prefix = find_brew_prefix();
++            // println!("cargo:rustc-link-search={}/opt/libomp/lib", brew_prefix)
++        // }
+         ARM_APPLE => {
+             let brew_prefix = find_brew_prefix();
+             println!("cargo:rustc-link-search={}/opt/libomp/lib", brew_prefix)
 @@ -230,7 +230,7 @@ fn link_lib_omp(toolchain: &'static str) {
          ARM_LINUX | INTEL_APPLE | ARM_APPLE => {
              println!("cargo:rustc-link-lib=omp")
